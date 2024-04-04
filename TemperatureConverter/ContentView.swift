@@ -8,14 +8,50 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var temperature = ""
+    @State private var temperatura = 0.0
+    @State var selectedType = "Celsius"
+    var options = ["Celsius", "Fahrenheit"]
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            Form {
+                Section {
+                    HStack {
+                        TextField("Grados", text: $temperature).keyboardType(.decimalPad)
+                        
+                        Text((selectedType == "Celsius") ? "Fahrenheit" : "Celsius")
+                    }
+                    
+                    Picker("Convert Type", selection: $selectedType) {
+                        ForEach(options, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    
+                }
+                
+                Section {
+                    Button("Convert") {
+                        convertType()
+                    }
+                }
+                
+                Text("\(temperatura, specifier: "%.2f")")
+            }.navigationTitle("Converter")
         }
-        .padding()
+    }
+    
+    func convertType() {
+        temperatura = Double(temperature)!
+        
+        if selectedType == "Celsius" {
+            temperatura -= 32
+            temperatura *= 0.5555
+        } else {
+            temperatura *= 1.8
+            temperatura += 32
+        }
     }
 }
 
